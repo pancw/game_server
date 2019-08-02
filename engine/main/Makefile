@@ -1,7 +1,8 @@
+
 INSTALLDIR=$(shell pwd)/../../extlib/install
 ROOT=$(shell pwd)
 
-BIN=gate
+BIN=main
 
 DEPS=$(shell find ./ -name "*.h")
 
@@ -22,10 +23,14 @@ INCLUDE= \
 	-I $(ROOT)/include \
 	-I $(ROOT)/../common/include \
 	-I $(INSTALLDIR)/lua51/include \
+	-I $(INSTALLDIR)/mongoc/include/libbson-1.0 \
+	-I $(INSTALLDIR)/mongoc/include/libmongoc-1.0 \
 	-I $(INSTALLDIR)/libevent/include
 
 LIB= \
 	$(INSTALLDIR)/lua51/lib/liblua.a \
+	$(INSTALLDIR)/mongoc/lib/libmongoc-static-1.0.a \
+	$(INSTALLDIR)/mongoc/lib/libbson-static-1.0.a \
 	$(INSTALLDIR)/libevent/lib/libevent.a \
 	$(INSTALLDIR)/libevent/lib/libevent_core.a \
 	$(INSTALLDIR)/libevent/lib/libevent_extra.a \
@@ -45,9 +50,3 @@ $(BIN): $(OBJ) $(LIB)
 clean:
 	rm -rf $(OBJ) $(BIN)
 
-ALL_SRC:
-	@echo "-----cpp--------"
-	@echo $(CPP_SRC)
-	@echo "------c---------"
-	@echo $(C_SRC)
-	@echo "----------------"

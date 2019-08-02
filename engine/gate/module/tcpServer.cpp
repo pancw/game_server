@@ -68,7 +68,7 @@ tcpListenerCb(struct evconnlistener *listener, evutil_socket_t fd,
 		return;
 	}
 	
-	printf("accept a tcp client. \n");
+	printf("accept a tcp client. vfd=%d \n", vfd);
 }
 
 bool listenTcpClient(int port)
@@ -148,7 +148,7 @@ void Client::handle_event(const char* msg, size_t len)
 	lua_State* GlobalL = luaBase::getLuaState();
 	int top = lua_gettop(GlobalL);
 	lua_pushcclosure(GlobalL, luaBase::error_fun, 0);
-	lua_getglobal(GlobalL, "RecvJob");
+	lua_getglobal(GlobalL, "HandleTcpEvent");
 	lua_pushnumber(GlobalL, this->getVfd());
 	lua_pushlstring(GlobalL, msg, len);
 	
@@ -206,14 +206,14 @@ static int kickTcpClient(lua_State* L)
 
 const luaL_reg libs[] =
 {
-	{"send", sendMsgToTcpClient},
-	{"kick", kickTcpClient},
+	{"sendMsgToTcpClient", sendMsgToTcpClient},
+	{"kickTcpClient", kickTcpClient},
 	{NULL, NULL},
 };
 
 void openLibs(lua_State* L)
 {
-	luaL_register(L, "GAME_CLIENT", libs);	
+	luaL_register(L, "TCP_SERVER", libs);	
 }
 
 }

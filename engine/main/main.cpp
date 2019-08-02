@@ -1,10 +1,9 @@
+
 #include <iostream>
 #include <cstdio>
 #include "libeventBase.h"
 #include "luaBase.h"
 #include "luaService.h"
-#include "tcpServer.h"
-#include "unixServer.h"
 #include "unixClient.h"
 
 extern "C" {
@@ -17,16 +16,16 @@ extern int luaopen_cmsgpack(lua_State *);
 static void luaopen_libs(lua_State * L)
 {
 	luaopen_cmsgpack(L);
-	tcpServer::openLibs(L);	
-	unixServer::openLibs(L);
+	//tcpServer::openLibs(L);	
+	//unixServer::openLibs(L);
 	unixClient::openLibs(L);
 }
 
 static void releaseAll()
 {
-	tcpServer::release();
+	//tcpServer::release();
 	unixClient::release();
-	unixServer::release();
+	//unixServer::release();
 	network::releaseBase();
 	printf("All released.\n");
 }
@@ -71,31 +70,43 @@ int main(int argc, char * argv[])
 	// config
 	lua_State* GlobalL = luaBase::getLuaState();
 	lua_getglobal(GlobalL, "GetConfig");
-	ret = lua_pcall(GlobalL, 0, 2, 0);
+	ret = lua_pcall(GlobalL, 0, 4, 0);
 	if (ret)
 	{   
 		fprintf(stderr, "call config error:%s\n", lua_tostring(GlobalL, -1));
 		return 1;
 	}
-	const int gameClientPort = lua_tonumber(GlobalL, -1);
-	if (!gameClientPort)
+	const int dbUnixServerPort = lua_tonumber(GlobalL, -1);
+	if (!dbUnixServerPort)
 	{
-		fprintf(stderr, "gameClientPort error!\n");
+		fprintf(stderr, "dbUnixServerPort error!\n");
 		return 1;
 	}
-	const int gateUnixServerPort = lua_tonumber(GlobalL, -2);
+	const int logUnixServerPort = lua_tonumber(GlobalL, -2);
+	if (!logUnixServerPort)
+	{
+		fprintf(stderr, "logUnixServerPort error!\n");
+		return 1;
+	}
+	const int mainUnixServerPort = lua_tonumber(GlobalL, -3);
+	if (!mainUnixServerPort)
+	{
+		fprintf(stderr, "mainUnixServerPort error!\n");
+		return 1;
+	}
+	const int gateUnixServerPort = lua_tonumber(GlobalL, -4);
 	if (!gateUnixServerPort)
 	{
 		fprintf(stderr, "gateUnixServerPort error!\n");
 		return 1;
 	}
-	// printf("gameClientPort:%d,gateUnixServerPort=%d\n", gameClientPort, gateUnixServerPort);
 
 	if (!network::initBase())
 	{
 		fprintf(stderr, "libevent base init error!\n");
 		return 1;
 	}
+	/*
 	if (!unixServer::listenUnixClient(gateUnixServerPort))
 	{
 		fprintf(stderr, "listenUnixClient error!\n");
@@ -106,6 +117,7 @@ int main(int argc, char * argv[])
 		fprintf(stderr, "listenTcpClient error!\n");
 		return 1;
 	}
+	*/
 
 	luaService::call(luaBase::getLuaState(), "BeforDispatch");
 	network::dispatch();

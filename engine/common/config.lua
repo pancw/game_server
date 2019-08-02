@@ -8,9 +8,20 @@ local function fetchPort()
 end
 
 local gameClientPort = fetchPort()
+
 local gateUnixServerPort = fetchPort()
+local mainUnixServerPort = fetchPort()
+local logUnixServerPort = fetchPort()
+local dbUnixServerPort = fetchPort()
 
 function GetGateConfig()
 	return gateUnixServerPort, gameClientPort
 end
 
+function GetMainConfig()
+	return gateUnixServerPort, mainUnixServerPort, logUnixServerPort, dbUnixServerPort
+end
+
+function GetGateUnixPort()
+	return gateUnixServerPort
+end
