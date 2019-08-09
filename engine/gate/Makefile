@@ -6,21 +6,22 @@ BIN=gate
 DEPS=$(shell find ./ -name "*.h")
 
 C_SRC=$(shell find ./ -name "*.c") \
-	$(ROOT)/../common/module/lua_cmsgpack.c
+	$(ROOT)/../c_common/module/lua_cmsgpack.c
 
 
 CPP_SRC=$(shell find ./ -name "*.cpp") \
-	$(ROOT)/../common/module/connectionBase.cpp \
-	$(ROOT)/../common/module/luaService.cpp \
-	$(ROOT)/../common/module/luaBase.cpp \
-	$(ROOT)/../common/module/libeventBase.cpp \
-	$(ROOT)/../common/module/unixClient.cpp
+	$(ROOT)/../c_common/module/connectionBase.cpp \
+	$(ROOT)/../c_common/module/luaService.cpp \
+	$(ROOT)/../c_common/module/luaBase.cpp \
+	$(ROOT)/../c_common/module/libeventBase.cpp \
+	$(ROOT)/../c_common/module/unixServer.cpp \
+	$(ROOT)/../c_common/module/unixClient.cpp
 
 OBJ=$(C_SRC:%.c=%.o) $(CPP_SRC:%.cpp=%.o)
 
 INCLUDE= \
 	-I $(ROOT)/include \
-	-I $(ROOT)/../common/include \
+	-I $(ROOT)/../c_common/include \
 	-I $(INSTALLDIR)/lua51/include \
 	-I $(INSTALLDIR)/libevent/include
 

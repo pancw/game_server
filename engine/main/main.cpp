@@ -1,9 +1,9 @@
-
 #include <iostream>
 #include <cstdio>
 #include "libeventBase.h"
 #include "luaBase.h"
 #include "luaService.h"
+#include "unixServer.h"
 #include "unixClient.h"
 
 extern "C" {
@@ -17,7 +17,7 @@ static void luaopen_libs(lua_State * L)
 {
 	luaopen_cmsgpack(L);
 	//tcpServer::openLibs(L);	
-	//unixServer::openLibs(L);
+	unixServer::openLibs(L);
 	unixClient::openLibs(L);
 }
 
@@ -25,7 +25,7 @@ static void releaseAll()
 {
 	//tcpServer::release();
 	unixClient::release();
-	//unixServer::release();
+	unixServer::release();
 	network::releaseBase();
 	printf("All released.\n");
 }
@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
 	}
 	*/
 
-	if (chdir("logic") == -1)
+	if (chdir("../main_logic") == -1)
 	{
 		fprintf(stderr, "bad logic path to dir:%s\n", "../logic");
 		return 1;
@@ -72,7 +72,7 @@ int main(int argc, char * argv[])
 	lua_getglobal(GlobalL, "GetConfig");
 	ret = lua_pcall(GlobalL, 0, 4, 0);
 	if (ret)
-	{   
+	{
 		fprintf(stderr, "call config error:%s\n", lua_tostring(GlobalL, -1));
 		return 1;
 	}
@@ -106,12 +106,12 @@ int main(int argc, char * argv[])
 		fprintf(stderr, "libevent base init error!\n");
 		return 1;
 	}
-	/*
-	if (!unixServer::listenUnixClient(gateUnixServerPort))
+	if (!unixServer::listenUnixClient(mainUnixServerPort))
 	{
 		fprintf(stderr, "listenUnixClient error!\n");
 		return 1;
 	}
+	/*
 	if (!tcpServer::listenTcpClient(gameClientPort))
 	{
 		fprintf(stderr, "listenTcpClient error!\n");

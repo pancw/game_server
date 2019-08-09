@@ -1,5 +1,5 @@
 
-package.path = package.path ..';..\/..\/common\/?.lua';
+package.path = package.path ..';..\/common\/?.lua';
 
 require "config"
 
@@ -22,4 +22,8 @@ function HandleUnixEvent(ufd, msg)
 end
 
 function Tick()
+	local mainUnixPort = GetMainUnixPort()
+	if not UnixClient.checkHasConnected(mainUnixPort) then
+		UnixClient.connectUnixSrv(mainUnixPort)
+	end
 end

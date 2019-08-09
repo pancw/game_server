@@ -2,7 +2,7 @@
 INSTALLDIR=$(shell pwd)/../../extlib/install
 ROOT=$(shell pwd)
 
-BIN=main
+BIN=logger
 
 DEPS=$(shell find ./ -name "*.h")
 
@@ -15,8 +15,7 @@ CPP_SRC=$(shell find ./ -name "*.cpp") \
 	$(ROOT)/../c_common/module/luaService.cpp \
 	$(ROOT)/../c_common/module/luaBase.cpp \
 	$(ROOT)/../c_common/module/libeventBase.cpp \
-	$(ROOT)/../c_common/module/unixServer.cpp \
-	$(ROOT)/../c_common/module/unixClient.cpp
+	$(ROOT)/../c_common/module/unixServer.cpp
 
 OBJ=$(C_SRC:%.c=%.o) $(CPP_SRC:%.cpp=%.o)
 
@@ -24,14 +23,10 @@ INCLUDE= \
 	-I $(ROOT)/include \
 	-I $(ROOT)/../c_common/include \
 	-I $(INSTALLDIR)/lua51/include \
-	-I $(INSTALLDIR)/mongoc/include/libbson-1.0 \
-	-I $(INSTALLDIR)/mongoc/include/libmongoc-1.0 \
 	-I $(INSTALLDIR)/libevent/include
 
 LIB= \
 	$(INSTALLDIR)/lua51/lib/liblua.a \
-	$(INSTALLDIR)/mongoc/lib/libmongoc-static-1.0.a \
-	$(INSTALLDIR)/mongoc/lib/libbson-static-1.0.a \
 	$(INSTALLDIR)/libevent/lib/libevent.a \
 	$(INSTALLDIR)/libevent/lib/libevent_core.a \
 	$(INSTALLDIR)/libevent/lib/libevent_extra.a \

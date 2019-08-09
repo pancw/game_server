@@ -25,3 +25,12 @@ end
 function GetGateUnixPort()
 	return gateUnixServerPort
 end
+
+function GetMainUnixPort()
+	return mainUnixServerPort	
+end
+
+function GetLogUnixPort()
+	return logUnixServerPort
+end
+

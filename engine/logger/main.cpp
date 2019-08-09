@@ -3,9 +3,8 @@
 #include "libeventBase.h"
 #include "luaBase.h"
 #include "luaService.h"
-#include "tcpServer.h"
 #include "unixServer.h"
-#include "unixClient.h"
+#include "logger.h"
 
 extern "C" {
 #include "lua.h"
@@ -17,31 +16,21 @@ extern int luaopen_cmsgpack(lua_State *);
 static void luaopen_libs(lua_State * L)
 {
 	luaopen_cmsgpack(L);
-	tcpServer::openLibs(L);	
 	unixServer::openLibs(L);
-	unixClient::openLibs(L);
+	logger::openLibs(L);
 }
 
 static void releaseAll()
 {
-	tcpServer::release();
-	unixClient::release();
 	unixServer::release();
 	network::releaseBase();
+	logger::releaseAllFile();
 	printf("All released.\n");
 }
 
 int main(int argc, char * argv[])
 {
-	/*
-	if (argc < 2)
-	{
-		printf("Usage:%s <port>\n", argv[0]);
-		return -1;
-	}
-	*/
-
-	if (chdir("../gate_logic") == -1)
+	if (chdir("../logger_logic") == -1)
 	{
 		fprintf(stderr, "bad logic path to dir:%s\n", "../logic");
 		return 1;
@@ -71,39 +60,27 @@ int main(int argc, char * argv[])
 	// config
 	lua_State* GlobalL = luaBase::getLuaState();
 	lua_getglobal(GlobalL, "GetConfig");
-	ret = lua_pcall(GlobalL, 0, 2, 0);
+	ret = lua_pcall(GlobalL, 0, 1, 0);
 	if (ret)
-	{   
+	{
 		fprintf(stderr, "call config error:%s\n", lua_tostring(GlobalL, -1));
 		return 1;
 	}
-	const int gameClientPort = lua_tonumber(GlobalL, -1);
-	if (!gameClientPort)
+	const int logUnixServerPort = lua_tonumber(GlobalL, -1);
+	if (!logUnixServerPort)
 	{
-		fprintf(stderr, "gameClientPort error!\n");
+		fprintf(stderr, "logUnixServerPort error!\n");
 		return 1;
 	}
-	const int gateUnixServerPort = lua_tonumber(GlobalL, -2);
-	if (!gateUnixServerPort)
-	{
-		fprintf(stderr, "gateUnixServerPort error!\n");
-		return 1;
-	}
-	// printf("gameClientPort:%d,gateUnixServerPort=%d\n", gameClientPort, gateUnixServerPort);
 
 	if (!network::initBase())
 	{
 		fprintf(stderr, "libevent base init error!\n");
 		return 1;
 	}
-	if (!unixServer::listenUnixClient(gateUnixServerPort))
+	if (!unixServer::listenUnixClient(logUnixServerPort))
 	{
 		fprintf(stderr, "listenUnixClient error!\n");
-		return 1;
-	}
-	if (!tcpServer::listenTcpClient(gameClientPort))
-	{
-		fprintf(stderr, "listenTcpClient error!\n");
 		return 1;
 	}
 
@@ -113,3 +90,4 @@ int main(int argc, char * argv[])
 	releaseAll();
 	return 0;
 }
+
