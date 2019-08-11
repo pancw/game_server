@@ -5,15 +5,15 @@ function GetConfig()
 	return CONFIG.GetMainConfig()	
 end
 
-function BeforShutdown()
-
-end
-
 function __G__TRACKBACK__(msg)
 	print("server lua error", msg)
 	local errInfo, btInfo = SafeY1Except(msg)
 	print(btInfo)
 	--LOG.mainError(btInfo)
+end
+
+function BeforShutdown()
+
 end
 
 local DOFILELIST = 
