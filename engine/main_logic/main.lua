@@ -1,27 +1,49 @@
 
 package.path = package.path ..';..\/common\/?.lua';
 
-require "config"
-
 function GetConfig()
-	return GetMainConfig()	
+	return CONFIG.GetMainConfig()	
 end
 
 function BeforShutdown()
 
 end
 
+function __G__TRACKBACK__(msg)
+	print("server lua error", msg)
+	local errInfo, btInfo = SafeY1Except(msg)
+	print(btInfo)
+	--LOG.mainError(btInfo)
+end
+
+local DOFILELIST = 
+{
+	"../common/base/common_class.lua",
+	"../common/base/class.lua",
+	"../common/base/import.lua",
+	"../common/base/extend.lua",
+	"../common/base/linecache.lua",
+	"../common/base/traceback.lua",
+	"../common/base/ldb.lua",
+	"base/global.lua",
+}
+
+function startGame()
+	os.exit = nil 
+	sys = sys or {}
+	sys.path = sys.path or {}
+
+	math.randomseed(os.time())
+	for _,file in ipairs(DOFILELIST) do
+		dofile(file)
+	end
+end
+startGame()
+
 function BeforDispatch()
 
 end
 
-local function tryConnect(unixPort)
-	if not UnixClient.checkHasConnected(unixPort) then
-		UnixClient.connectUnixSrv(unixPort)	
-	end
-end
-
 function Tick()
-	tryConnect(GetGateUnixPort())
-	tryConnect(GetLogUnixPort())
+	NETWORK.tryConnectSrv()
 end
