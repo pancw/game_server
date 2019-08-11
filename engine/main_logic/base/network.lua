@@ -9,3 +9,10 @@ function tryConnectSrv()
 	tryConnect(CONFIG.GetGateUnixPort())
 	tryConnect(CONFIG.GetLogUnixPort())
 end
+
+function tickAll()
+	local function all()
+		tryConnectSrv()
+	end
+	xpcall(all, __G__TRACKBACK__)
+end

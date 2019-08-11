@@ -45,5 +45,5 @@ function BeforDispatch()
 end
 
 function Tick()
-	NETWORK.tryConnectSrv()
+	NETWORK.tickAll()
 end
