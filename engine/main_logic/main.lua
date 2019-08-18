@@ -46,5 +46,5 @@ function BeforDispatch()
 end
 
 function Tick()
-	TickNetwork()
+	NETWORK.TickNetwork()
 end
