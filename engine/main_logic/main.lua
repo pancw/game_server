@@ -6,10 +6,10 @@ function GetConfig()
 end
 
 function __G__TRACKBACK__(msg)
-	print("server lua error", msg)
+	--print("server lua error", msg)
 	local errInfo, btInfo = SafeY1Except(msg)
-	print(btInfo)
-	--LOG.mainError(btInfo)
+	--print(btInfo)
+	LOG.sendError(btInfo)
 end
 
 function BeforShutdown()
@@ -25,6 +25,7 @@ local DOFILELIST =
 	"../common/base/linecache.lua",
 	"../common/base/traceback.lua",
 	"../common/base/ldb.lua",
+	"base/network.lua",
 	"base/global.lua",
 }
 
@@ -45,5 +46,5 @@ function BeforDispatch()
 end
 
 function Tick()
-	NETWORK.tickAll()
+	TickNetwork()
 end
