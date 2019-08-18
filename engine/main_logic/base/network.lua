@@ -1,5 +1,4 @@
 
-UNIX_CLIENT = {}
 UnixClientQueue = {
 	--[[
 	[port] = {
@@ -7,6 +6,11 @@ UnixClientQueue = {
 	}
 	--]]
 }
+
+function getUnixClientQueue()
+	return UnixClientQueue
+end
+
 function pushBackMsg(port, msg)
 	if not UnixClientQueue[port] then
 		UnixClientQueue[port] = {}
@@ -15,7 +19,7 @@ function pushBackMsg(port, msg)
 	print(string.format("push back msg to port:%d. sum:%d", port, #UnixClientQueue[port]))
 end
 
-function UnixClientConnectSuc(port)
+function unixClientConnectSuc(port)
 	if not UnixClientQueue[port] then
 		return
 	end
@@ -34,7 +38,6 @@ local function tryConnect(unixPort)
 	end
 end
 
-local b = 1000
 local function tryConnectSrv()
 	tryConnect(CONFIG.GetGateUnixPort())
 	tryConnect(CONFIG.GetLogUnixPort())
@@ -47,19 +50,3 @@ function TickNetwork()
 	xpcall(all, __G__TRACKBACK__)
 end
 
-setmetatable( UNIX_CLIENT, {
-	__index = function (t, method_name)
-		local function caller( ... )
-			local args = { ... }
-			local port = args[1]
-			table.remove(args, 1)
-			local msg = cmsgpack.pack({method_name, args})
-			if not UnixClient.checkHasConnected(port) then
-				pushBackMsg(port, msg)
-				return	
-			end
-			assert(UnixClient.send(port, msg))
-		end 
-		return caller
-	end 
-})

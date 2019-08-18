@@ -32,7 +32,7 @@ local DOFILELIST =
 	"../common/base/linecache.lua",
 	"../common/base/traceback.lua",
 	"../common/base/ldb.lua",
-	"base/network.lua",
+	"base/interface.lua",
 	"base/global.lua",
 }
 
