@@ -9,7 +9,7 @@ function __G__TRACKBACK__(msg)
 	print("server lua error", msg)
 	local errInfo, btInfo = SafeY1Except(msg)
 	print(btInfo)
-	--LOG.mainError(btInfo)
+	--LOG.sendError(btInfo)
 end
 
 function BeforShutdown()
@@ -20,10 +20,7 @@ function BeforDispatch()
 
 end
 
-local cnt = 0
 function Tick()
-	cnt = cnt + 1
-	Logger.writeLog("../test.log", string.format("[test %d]\n", cnt))
 end
 
 local DOFILELIST = 
@@ -35,6 +32,7 @@ local DOFILELIST =
 	"../common/base/linecache.lua",
 	"../common/base/traceback.lua",
 	"../common/base/ldb.lua",
+	"base/network.lua",
 	"base/global.lua",
 }
 
