@@ -106,6 +106,7 @@ void unix_srv_event_cb(struct bufferevent *bev, short event, void *arg)
 	if (connected)
 	{
 		c->setHasConnected(connected);
+		luaService::call(luaBase::getLuaState(), "UnixClientConnectSuc", srv_id);
 	}
 	else
 	{
@@ -189,7 +190,7 @@ static int connectUnixSrv(lua_State* L)
 	return 0;
 }
 
-static int sendMsg(lua_State* L)
+static int send(lua_State* L)
 {
 	int srv_id = lua_tonumber(L, 1);	
 	size_t size;
@@ -224,7 +225,7 @@ const luaL_reg libs[] =
 {
 	{"checkHasConnected", checkHasConnected},
 	{"connectUnixSrv", connectUnixSrv},
-	{"sendMsg", sendMsg},
+	{"send", send},
 	{NULL, NULL},
 };
 
