@@ -27,3 +27,6 @@ function Tick()
 		UnixClient.connectUnixSrv(mainUnixPort)
 	end
 end
+
+function UnixClientConnectSuc(port)
+end
