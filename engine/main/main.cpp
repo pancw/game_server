@@ -5,6 +5,7 @@
 #include "luaService.h"
 #include "unixServer.h"
 #include "unixClient.h"
+#include "cmongo.h"
 
 extern "C" {
 #include "lua.h"
@@ -15,6 +16,7 @@ extern int luaopen_cmsgpack(lua_State *);
 
 static void luaopen_libs(lua_State * L)
 {
+	cMongo::luaopenMongo(L);
 	luaopen_cmsgpack(L);
 	//tcpServer::openLibs(L);	
 	unixServer::openLibs(L);
@@ -27,6 +29,7 @@ static void releaseAll()
 	unixClient::release();
 	unixServer::release();
 	network::releaseBase();
+	cMongo::release();
 	printf("All released.\n");
 }
 
@@ -67,8 +70,28 @@ int main(int argc, char * argv[])
 		return 1;
 	}
 
-	// config
+	// connect db
 	lua_State* GlobalL = luaBase::getLuaState();
+	lua_getglobal(GlobalL, "GetMongoConfig");
+	ret = lua_pcall(GlobalL, 0, 1, 0);
+	if (ret)
+	{
+		fprintf(stderr, "call mongo config error:%s\n", lua_tostring(GlobalL, -1));
+		return 1;
+	}
+	const char* dbUrl = lua_tostring(GlobalL, -1);
+	if (!dbUrl)
+	{
+		fprintf(stderr, "db url error!\n");
+		return 1;
+	}
+	if (!cMongo::connectMongo(dbUrl))
+	{
+		return 1;
+	}
+	
+
+	// config
 	lua_getglobal(GlobalL, "GetConfig");
 	ret = lua_pcall(GlobalL, 0, 4, 0);
 	if (ret)

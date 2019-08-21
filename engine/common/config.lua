@@ -14,6 +14,11 @@ local mainUnixServerPort = fetchPort()
 local logUnixServerPort = fetchPort()
 local dbUnixServerPort = fetchPort()
 
+local DB_URL = "mongodb://127.0.0.1:27017"
+function getMongoConfig()
+	return DB_URL
+end
+
 function GetGateConfig()
 	return gateUnixServerPort, gameClientPort
 end
