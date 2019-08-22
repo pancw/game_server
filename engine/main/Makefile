@@ -16,7 +16,8 @@ CPP_SRC=$(shell find ./ -name "*.cpp") \
 	$(ROOT)/../c_common/module/luaBase.cpp \
 	$(ROOT)/../c_common/module/libeventBase.cpp \
 	$(ROOT)/../c_common/module/unixServer.cpp \
-	$(ROOT)/../c_common/module/unixClient.cpp
+	$(ROOT)/../c_common/module/unixClient.cpp \
+	$(ROOT)/../c_common/module/cmongo.cpp 
 
 OBJ=$(C_SRC:%.c=%.o) $(CPP_SRC:%.cpp=%.o)
 
@@ -39,7 +40,8 @@ LIB= \
 
 
 $(BIN): $(OBJ) $(LIB)
-	g++ -o $@ $^ $(LIB) $(INCLUDE) -g -Wall -Wl,-Bstatic -lstdc++ -lc -lrt -lssl -lresolv -licuuc -licudata -lz -lcrypto -Wl,-Bdynamic -ldl -lpthread
+	#g++ -o $@ $^ $(LIB) $(INCLUDE) -g -Wall -Wl,-Bstatic -lstdc++ -lc -lrt -lssl -lresolv -licuuc -licudata -lz -lcrypto -Wl,-Bdynamic -ldl -lpthread
+	g++ -o $@ $^ $(LIB) $(INCLUDE) -g -Wall -Wl,-Bstatic -lstdc++ -lc -lrt -lssl -lresolv -lz -lcrypto -Wl,-Bdynamic -ldl -lpthread
 
 %.o: %.c $(DEPS)
 	gcc -c $< -o $@ $(INCLUDE) -Wall
