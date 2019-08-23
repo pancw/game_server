@@ -21,3 +21,15 @@ setmetatable( UNIX_CLIENT, {
 function UnixClientConnectSuc(port)
 	NETWORK.unixClientConnectSuc(port)
 end
+
+function GetConfig()
+	return CONFIG.GetMainConfig()	
+end
+
+function GetMongoConfig()
+	return CONFIG.getMongoConfig()
+end
+
+function Tick()
+	NETWORK.TickNetwork()
+end

@@ -1,23 +1,11 @@
 
 package.path = package.path ..';..\/common\/?.lua';
 
-function GetConfig()
-	return CONFIG.GetMainConfig()	
-end
-
-function GetMongoConfig()
-	return CONFIG.getMongoConfig()
-end
-
 function __G__TRACKBACK__(msg)
 	--print("server lua error", msg)
 	local errInfo, btInfo = SafeY1Except(msg)
 	--print(btInfo)
 	LOG.sendError(btInfo)
-end
-
-function BeforShutdown()
-
 end
 
 local DOFILELIST = 
@@ -49,6 +37,7 @@ function BeforDispatch()
 
 end
 
-function Tick()
-	NETWORK.TickNetwork()
+function BeforShutdown()
+
 end
+
